@@ -38,7 +38,13 @@ def d16_of(deg):
 def local(y, mo, d, h, mi, s=0):
     return datetime(y, mo, d, h, mi, s, tzinfo=ROME)
 
-def read_vedetta(txt):
+def strip_html(html):
+    txt = re.sub(r"(?is)<(script|style).*?</\1>", " ", html)
+    txt = re.sub(r"<[^>]+>", " ", txt); txt = re.sub(r"&nbsp;|&#160;", " ", txt); txt = re.sub(r"&[a-z]+;", "", txt)
+    return re.sub(r"\s+", " ", txt)
+
+def read_vedetta(html):
+    txt = strip_html(html)
     m = re.search(r"(\d\d):(\d\d):(\d\d)\s+(\d\d)/(\d\d)/(\d{4})", txt)
     k = re.search(r"Vento Attuale:\s*([\d.]+)\s*(kts|km/h)?", txt, re.I)
     d = re.search(r"Direzione:\s*([A-Z]+)", txt, re.I)
@@ -103,6 +109,9 @@ def collect_obs(now):
         w.writerows(rows)
     print(f"Misure: {len(rows)} salvate in {os.path.relpath(path, ROOT)}")
     for n in notes: print("  -", n)
+    with open(os.path.join(ROOT, "data", "ultimo_giro.txt"), "w", encoding="utf-8") as fh:
+        fh.write(f"Giro delle {now:%d/%m/%Y %H:%M}: {len(rows)} misure salvate su {len(CFG['stations'])} centraline\n")
+        fh.writelines(f"- {n}\n" for n in notes)
 
 def collect_fc(now, force=False):
     date = now.strftime("%Y-%m-%d")
