@@ -40,9 +40,11 @@ def load(days):
     for p in glob.glob(os.path.join(ROOT, "data", "fc", "*.json")):
         x = json.load(open(p, encoding="utf-8")); fc[x["date"]] = x
     since = datetime.now(ROME) - timedelta(days=days) if days else None
-    pairs = []
+    pairs = []; seen = set()
     for p in sorted(glob.glob(os.path.join(ROOT, "data", "obs", "*.csv"))):
         for r in csv.DictReader(open(p, encoding="utf-8")):
+            if (r["station"], r["obs_time"]) in seen: continue   # stessa lettura salvata due volte
+            seen.add((r["station"], r["obs_time"]))
             t = datetime.fromisoformat(r["obs_time"])
             if since and t < since: continue
             f = fc.get(t.strftime("%Y-%m-%d"))
