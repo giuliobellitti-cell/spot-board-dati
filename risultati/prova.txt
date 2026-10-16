@@ -1,14 +1,28 @@
-Prova del 16/10/2026 12:21 (ora italiana)
-OK   Vedetta Marotta: HTTP 200, 1369 byte, orario trovato: 12:20:48 16/10/2026
-OK   Vedetta Senigallia: HTTP 200, 1368 byte, orario trovato: 12:21:03 16/10/2026
-OK   Vedetta Portonovo: HTTP 200, 1360 byte, orario trovato: 12:21:01 16/10/2026
-OK   Vedetta Numana (Pratone): HTTP 200, 1368 byte, orario trovato: 12:20:26 16/10/2026
-OK   Vedetta Marina Palmense: HTTP 200, 1371 byte, orario trovato: 12:20:56 16/10/2026
-OK   Soluzioni Meteo Numana: HTTP 200, 2083 byte, orario trovato: "timeUTC":"2026,10,16,10,20,41"
+Prova del 16/10/2026 12:27 (ora italiana)
+OK   Vedetta Marotta: HTTP 200, 1369 byte, orario trovato: 12:27:12 16/10/2026
+OK   Vedetta Senigallia: HTTP 200, 1368 byte, orario trovato: 12:26:52 16/10/2026
+OK   Vedetta Portonovo: HTTP 200, 1360 byte, orario trovato: 12:27:18 16/10/2026
+OK   Vedetta Numana (Pratone): HTTP 200, 1368 byte, orario trovato: 12:26:35 16/10/2026
+OK   Vedetta Marina Palmense: HTTP 200, 1371 byte, orario trovato: 12:27:25 16/10/2026
+OK   Soluzioni Meteo Numana: HTTP 200, 2079 byte, orario trovato: "timeUTC":"2026,10,16,10,27,23"
 OK   Meteo System Marina Dorica: HTTP 200, 24316 byte, orario trovato: —
-OK   Windsurf Maniac Riccione: HTTP 200, 150 byte, orario trovato: "data":"12:20:57 16/10/2026"
-OK   Wunderground IPESAR14: HTTP 200, 82291 byte, orario trovato: —
-OK   Wunderground IFANO17: HTTP 200, 82601 byte, orario trovato: —
+OK   Windsurf Maniac Riccione: HTTP 200, 150 byte, orario trovato: "data":"12:27:07 16/10/2026"
+OK   Wunderground IPESAR14: HTTP 200, 472314 byte, orario trovato: —
+OK   Wunderground IFANO17: HTTP 200, 472292 byte, orario trovato: —
 OK   Ecowitt Bagni Venerucci: HTTP 200, 5257 byte, orario trovato: —
-OK   Meteobridge MMM (immagine): HTTP 200, 28914 byte, orario trovato: —
+OK   Meteobridge MMM (immagine): HTTP 200, 27805 byte, orario trovato: —
 OK   Open-Meteo: HTTP 200, 1747 byte, orario trovato: —
+
+METEOSYSTEM: - Sat24.com Documento senza titolo Dati aggiornati il 16/10/26 alle ore 12.27 Situazione attuale Estremi giornalieri &nbsp; DATI GENERALI MIN ora MAX ora &nbsp;
+METEOSYSTEM vento: VENTO &nbsp; MEDIA 10 MIN &nbsp; RAFFICA ora &nbsp; Velocit&agrave; 5.2 kts 5.9 kts - 9.6 kts 8:02 &nbsp; Direzione da NW - - - - &nbsp; PRECIPITAZIONI ACCUMULO &nbsp; &nbsp; &nbsp; &nbsp; Intensit&ag
+WU IPESAR14 obsTimeLocal : —
+WU IPESAR14 windSpeed : —
+WU IPESAR14 winddir :             <tr data-row="winddir">
+WU IPESAR14 windGust : —
+WU IPESAR14 apiKey : /ad_third_party_config/6c750bdb-35c9-49a8-a826-e70d568e6ecd?apiKey=5c241d89f91274015a577e3e17d43370","rulesUrlInitDelay":100},"wfxtg":{"acctId":"q
+WU IFANO17 obsTimeLocal : 17","tz":"Europe/Rome","obsTimeUtc":"2026-10-15T22:04:55Z","obsTimeLocal":"2026-10-16 00:04:55","epoch":1792101895,"lat":43.850855,"lon":13.014349,"sola
+WU IFANO17 windSpeed : h.","Winds S at 10 to 20 mph.","Winds S at 10 to 15 mph."],"windSpeed":[10,12,13,13,12,11,9,9,11,12,13,12],"wxPhraseLong":["AM Clouds/PM Sun","Clouds
+WU IFANO17 winddir : f83}  .charts-container .canvas-bounds .charts-canvas .plot.winddir circle{fill:#0053ae;stroke:#0053ae}  .charts-container .canvas-bounds .charts-c
+WU IFANO17 windGust : ibility":8,"windDirection":40,"windDirectionCardinal":"NE","windGust":null,"windSpeed":3,"wxPhraseLong":"Clear","wxPhraseMedium":"Clear","wxPhraseSh
+WU IFANO17 apiKey : ","u":"https://api.weather.com/v2/pws/observations/all/1day?apiKey=ff90f212a6984a7390f212a698ea73cc&stationId=IFANO17&numericPrecision=decimal&for
+ECOWITT script/api hints: []
