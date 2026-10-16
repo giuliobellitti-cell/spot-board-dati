@@ -1,7 +1,7 @@
 name: Prova centraline
 on:
   push:
-    paths: ["check_sources.py", ".github/workflows/check.yml"]
+    paths: ["check_sources.py", "check_detail.py", ".github/workflows/check.yml"]
   workflow_dispatch:
 permissions:
   contents: write
@@ -16,7 +16,7 @@ jobs:
       - name: Prova le fonti
         run: |
           mkdir -p risultati
-          { echo "Prova del $(TZ=Europe/Rome date '+%d/%m/%Y %H:%M') (ora italiana)"; python check_sources.py; } | tee risultati/prova.txt
+          { echo "Prova del $(TZ=Europe/Rome date '+%d/%m/%Y %H:%M') (ora italiana)"; python check_sources.py; echo; python check_detail.py; } | tee risultati/prova.txt
       - name: Salva il risultato
         run: |
           git config user.name "github-actions[bot]"
