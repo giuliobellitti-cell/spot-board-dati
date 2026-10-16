@@ -2,6 +2,7 @@ name: Raccolta dati vento
 on:
   schedule:
     - cron: "7 4-20 * * *"   # ogni ora al minuto 7 (UTC); lo script lavora solo dalle 7 alle 21 ora italiana
+    - cron: "27,47 4-20 * * *"   # giro leggero: solo le mede IRBIM per il riquadro Live
   workflow_dispatch:
     inputs:
       force_fc:
@@ -25,7 +26,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Raccogli misure e previsione
-        run: python collect.py ${{ inputs.force_fc && '--force-fc' || '' }}
+        run: python collect.py ${{ inputs.force_fc && '--force-fc' || '' }} ${{ github.event.schedule == '27,47 4-20 * * *' && '--live' || '' }}
       - name: Salva nell'archivio
         run: |
           git config user.name "github-actions[bot]"

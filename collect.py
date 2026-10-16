@@ -102,11 +102,34 @@ READERS = {"vedetta": read_vedetta, "soluzionimeteo": read_soluzionimeteo, "wind
 
 def r1(v): return None if v is None else round(v, 1)
 
+def write_live(now, readings):
+    """data/live.json: ultima lettura di ogni centralina, letta dalla pagina per il riquadro Live."""
+    p = os.path.join(ROOT, "data", "live.json")
+    try: live = json.load(open(p, encoding="utf-8"))
+    except Exception: live = {"stations": {}}
+    for sid, o in readings.items():
+        live["stations"][sid] = {"t": o["t"].isoformat(timespec="minutes"), "kn": r1(o["kn"]), "gust": r1(o["gust"]),
+                                 "gmax": r1(o["gmax"]), "dir": o["dir"] or "", "deg": r1(o.get("deg"))}
+    live["updated"] = now.isoformat(timespec="minutes")
+    json.dump(live, open(p, "w", encoding="utf-8"), separators=(",", ":"))
+
+def collect_live(now):
+    """Giro leggero (ogni 20 minuti): solo le mede IRBIM, solo live.json, niente archivio."""
+    got = {}
+    for st in CFG["stations"]:
+        if st["src"] != "irbim": continue
+        try:
+            o = read_irbim(st)
+            if o: got[st["id"]] = o
+        except Exception as e: print(st["id"], "errore", type(e).__name__)
+    write_live(now, got)
+    print(f"Live: {len(got)} mede aggiornate")
+
 def collect_obs(now):
     path = os.path.join(ROOT, "data", "obs", now.strftime("%Y-%m") + ".csv")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     new = not os.path.exists(path)
-    rows, notes = [], []
+    rows, notes, fresh = [], [], {}
     for st in CFG["stations"]:
         try:
             o = read_irbim(st) if st["src"] == "irbim" else READERS[st["src"]](get(st["url"]))
@@ -117,12 +140,14 @@ def collect_obs(now):
         age = (now - o["t"]).total_seconds() / 60
         if age > st.get("max_age_min", 100 if st["src"] == "irbim" else MAX_AGE_MIN) or age < -10:
             notes.append(f"{st['id']}: lettura vecchia ({o['t']:%d/%m %H:%M})"); continue
+        fresh[st["id"]] = o
         rows.append([now.isoformat(timespec="minutes"), st["id"], o["t"].isoformat(timespec="minutes"),
                      r1(o["kn"]), r1(o["gust"]), r1(o["gmax"]), r1(o["deg"]) if o.get("deg") is not None else deg_of(o["dir"]), o["dir"] or ""])
     with open(path, "a", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         if new: w.writerow(["run", "station", "obs_time", "kn", "gust", "gmax_today", "dir_deg", "dir"])
         w.writerows(rows)
+    write_live(now, fresh)
     print(f"Misure: {len(rows)} salvate in {os.path.relpath(path, ROOT)}")
     for n in notes: print("  -", n)
     with open(os.path.join(ROOT, "data", "ultimo_giro.txt"), "w", encoding="utf-8") as fh:
@@ -158,6 +183,9 @@ def collect_fc(now, force=False):
 def main():
     now = datetime.now(ROME)
     force_fc = "--force-fc" in sys.argv
+    if "--live" in sys.argv:
+        if HOUR_FROM <= now.hour <= HOUR_TO: collect_live(now)
+        return
     if FC_FROM_HOUR <= now.hour < FC_UNTIL_HOUR or force_fc:
         try: collect_fc(now, force_fc)
         except Exception as e: print("Previsione non salvata:", type(e).__name__, e)
