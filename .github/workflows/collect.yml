@@ -1,0 +1,36 @@
+name: Raccolta dati vento
+on:
+  schedule:
+    - cron: "7 4-20 * * *"   # ogni ora al minuto 7 (UTC); lo script lavora solo dalle 7 alle 21 ora italiana
+  workflow_dispatch:
+    inputs:
+      force_fc:
+        description: "Rifai la previsione di oggi anche se esiste già"
+        type: boolean
+        default: false
+  push:
+    paths: [".github/workflows/collect.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: raccolta
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Raccogli misure e previsione
+        run: python collect.py ${{ (inputs.force_fc || github.event_name == 'push') && '--force-fc' || '' }}
+      - name: Salva nell'archivio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "niente di nuovo"; exit 0; fi
+          git commit -m "Dati $(TZ=Europe/Rome date '+%d/%m %H:%M')"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
