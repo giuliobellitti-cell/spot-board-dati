@@ -9,7 +9,7 @@ on:
         type: boolean
         default: false
   push:
-    paths: [".github/workflows/collect.yml", "collect.py"]
+    paths: [".github/workflows/collect.yml", "collect.py", "stations.json"]
 permissions:
   contents: write
 concurrency:

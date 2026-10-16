@@ -10,4 +10,4 @@ Archivio automatico per confrontare le previsioni dei modelli con il vento misur
   classifica dei modelli, bias per centralina (test t, p<0,05) ed errori per fascia oraria.
 
 Le misure più vecchie di 70 minuti vengono scartate. La direzione si confronta solo con almeno 4 nodi.
-Wunderground, Ecowitt e la webcam di MMM non sono leggibili da qui e restano nel pulsante Aggiorna dello Spot Board.
+Le mede IRBIM (Fano, Senigallia, Portonovo, Porto Recanati) si leggono dal Grafana pubblico del CNR-IRBIM. Wunderground, Ecowitt e la webcam di MMM non sono leggibili da qui e restano nel pulsante Aggiorna dello Spot Board.

@@ -1,14 +1,154 @@
 {
-  "_nota": "Centraline lette ogni ora. 'fc' = punto (coordinate dello spot, dal link Windy) su cui si prende la previsione dei modelli.",
+  "_nota": "Centraline lette ogni ora. 'fc' = punto (coordinate dello spot, dal link Windy) su cui si prende la previsione dei modelli. Le mede IRBIM (CNR) si leggono dal loro Grafana pubblico con le stesse query dei pannelli; per loro 'fc' è la posizione della meda in mare.",
   "stations": [
-    {"id": "v-marotta", "name": "Marotta", "src": "vedetta", "url": "https://vedetta.org/image-client/marotta/meteo/dati_meteo.html", "spot": "Marotta", "fc": [43.772, 13.145]},
-    {"id": "v-senigallia-marzocca", "name": "Senigallia Marzocca", "src": "vedetta", "url": "https://vedetta.org/image-client/senigallia-marzocca/meteo/dati_meteo.html", "spot": "Senigallia", "fc": [43.688, 13.272]},
-    {"id": "ms-marinadorica", "name": "Marina Dorica", "src": "meteosystem", "url": "https://www.meteosystem.com/stazione/marinadorica/dati.php", "spot": "Triangolone", "fc": [43.610, 13.476]},
-    {"id": "v-portonovo-spiaggia", "name": "Portonovo spiaggia", "src": "vedetta", "url": "https://vedetta.org/image-client/portonovo-spiaggia/meteo/dati_meteo.html", "spot": "Portonovo", "fc": [43.568, 13.600]},
-    {"id": "sm-numana", "name": "Numana - Spiaggiola", "src": "soluzionimeteo", "url": "https://stazioni5.soluzionimeteo.it/numana/plugins/steelSeries/ssMeteotemplate.php", "spot": "Porto di Numana", "fc": [43.507, 13.629]},
-    {"id": "v-numana", "name": "Pratone - Conerokiteboarding", "src": "vedetta", "url": "https://vedetta.org/image-client/numana/meteo/dati_meteo.html", "spot": "Pratone - Conerokiteboarding", "fc": [43.477, 13.645]},
-    {"id": "v-marina-palmense", "name": "Marina Palmense", "src": "vedetta", "url": "https://vedetta.org/image-client/marina-palmense/meteo/dati_meteo.html", "spot": "Marina Palmense", "fc": [43.149, 13.824]},
-    {"id": "wm-riccione151", "name": "Riccione 151", "src": "windsurfmaniac", "url": "https://www.windsurf-maniac.it/grub_meteo.php?151=ok&id=ok", "spot": "Riccione", "fc": [44.031, 12.628]}
+    {
+      "id": "v-marotta",
+      "name": "Marotta",
+      "src": "vedetta",
+      "url": "https://vedetta.org/image-client/marotta/meteo/dati_meteo.html",
+      "spot": "Marotta",
+      "fc": [
+        43.772,
+        13.145
+      ]
+    },
+    {
+      "id": "v-senigallia-marzocca",
+      "name": "Senigallia Marzocca",
+      "src": "vedetta",
+      "url": "https://vedetta.org/image-client/senigallia-marzocca/meteo/dati_meteo.html",
+      "spot": "Senigallia",
+      "fc": [
+        43.688,
+        13.272
+      ]
+    },
+    {
+      "id": "ms-marinadorica",
+      "name": "Marina Dorica",
+      "src": "meteosystem",
+      "url": "https://www.meteosystem.com/stazione/marinadorica/dati.php",
+      "spot": "Triangolone",
+      "fc": [
+        43.61,
+        13.476
+      ]
+    },
+    {
+      "id": "v-portonovo-spiaggia",
+      "name": "Portonovo spiaggia",
+      "src": "vedetta",
+      "url": "https://vedetta.org/image-client/portonovo-spiaggia/meteo/dati_meteo.html",
+      "spot": "Portonovo",
+      "fc": [
+        43.568,
+        13.6
+      ]
+    },
+    {
+      "id": "sm-numana",
+      "name": "Numana - Spiaggiola",
+      "src": "soluzionimeteo",
+      "url": "https://stazioni5.soluzionimeteo.it/numana/plugins/steelSeries/ssMeteotemplate.php",
+      "spot": "Porto di Numana",
+      "fc": [
+        43.507,
+        13.629
+      ]
+    },
+    {
+      "id": "v-numana",
+      "name": "Pratone - Conerokiteboarding",
+      "src": "vedetta",
+      "url": "https://vedetta.org/image-client/numana/meteo/dati_meteo.html",
+      "spot": "Pratone - Conerokiteboarding",
+      "fc": [
+        43.477,
+        13.645
+      ]
+    },
+    {
+      "id": "v-marina-palmense",
+      "name": "Marina Palmense",
+      "src": "vedetta",
+      "url": "https://vedetta.org/image-client/marina-palmense/meteo/dati_meteo.html",
+      "spot": "Marina Palmense",
+      "fc": [
+        43.149,
+        13.824
+      ]
+    },
+    {
+      "id": "wm-riccione151",
+      "name": "Riccione 151",
+      "src": "windsurfmaniac",
+      "url": "https://www.windsurf-maniac.it/grub_meteo.php?151=ok&id=ok",
+      "spot": "Riccione",
+      "fc": [
+        44.031,
+        12.628
+      ]
+    },
+    {
+      "id": "irbim-fano",
+      "name": "Fano - meda IRBIM",
+      "src": "irbim",
+      "table": "FANO_FMC_BOA",
+      "cols": [
+        "mean_wind_speed",
+        "mean_wind_gust_speed",
+        "wind_direction_corr"
+      ],
+      "spot": "Lido di Fano",
+      "fc": [
+        43.892,
+        13.008
+      ]
+    },
+    {
+      "id": "irbim-senigallia",
+      "name": "Senigallia - meda IRBIM",
+      "src": "irbim",
+      "table": "TeleSenigallia_DatiMeteo",
+      "cols": [
+        "mean_wind_speed",
+        "wind_speed_max",
+        "mean_wind_direction"
+      ],
+      "spot": "Senigallia",
+      "fc": [
+        43.756,
+        13.209
+      ]
+    },
+    {
+      "id": "irbim-portonovo",
+      "name": "Portonovo - meda IRBIM",
+      "src": "irbim",
+      "table": "PNOVO_BOA",
+      "cols": [
+        "mean_wind_speed",
+        "mean_wind_gust_speed",
+        "wind_direction_corr"
+      ],
+      "spot": "Portonovo",
+      "fc": [
+        43.569,
+        13.588
+      ]
+    },
+    {
+      "id": "irbim-portorecanati",
+      "name": "Porto Recanati - meda IRBIM",
+      "src": "irbim",
+      "table": "PREC1000x_MedaPREC",
+      "sql": "SELECT TmStamp AS \"time\", if(WS_ms_Corr<1000,WS_ms_Corr,WS_ms_Rel) AS v, if(Corrected_Wind_Speed_Max<1000,Corrected_Wind_Speed_Max,Null) AS g, if(WindDir_Corr<360 and Ws_ms_Corr is not null,WindDir_Corr,WindDir_rel) AS d FROM PREC1000x_MedaPREC ORDER BY TmStamp desc limit 1",
+      "spot": "Porto Recanati",
+      "fc": [
+        43.424,
+        13.673
+      ]
+    }
   ],
   "models": {
     "ecmwf_ifs025": "ECMWF",

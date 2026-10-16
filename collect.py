@@ -82,6 +82,22 @@ def read_meteosystem(html):
     return dict(t=local(2000 + int(m[3]), int(m[2]), int(m[1]), int(m[4]), int(m[5])), kn=float(v[1]) / f,
                 gust=float(v[3]) / f if v[3] else None, gmax=float(v[4]) / f if v[4] else None, dir=d[1].replace("O", "W") if d else None)
 
+IRBIM_URL = "https://gr.irbim.cnr.it/grafana/api/ds/query"
+
+def read_irbim(st):
+    sql = st.get("sql") or ('SELECT TmStamp AS "time", {} AS v, {} AS g, {} AS d FROM {} ORDER BY TmStamp desc limit 1'
+                            .format(*st["cols"], st["table"]))
+    body = json.dumps({"queries": [{"refId": "A", "datasource": {"type": "mysql", "uid": "000000003"}, "rawSql": sql, "format": "table"}],
+                       "from": "now-6h", "to": "now"}).encode()
+    req = urllib.request.Request(IRBIM_URL, data=body, headers={**UA, "Content-Type": "application/json"})
+    j = json.loads(urllib.request.urlopen(req, timeout=30).read())
+    v = j["results"]["A"]["frames"][0]["data"]["values"]
+    if not v or not v[0] or v[1][0] is None: return None
+    ms = 1.943844  # m/s -> nodi
+    return dict(t=datetime.fromtimestamp(v[0][0] / 1000, tz=timezone.utc).astimezone(ROME), kn=v[1][0] * ms,
+                gust=v[2][0] * ms if v[2][0] is not None else None, gmax=None, dir=d16_of(v[3][0]) if v[3][0] is not None else None,
+                deg=v[3][0])
+
 READERS = {"vedetta": read_vedetta, "soluzionimeteo": read_soluzionimeteo, "windsurfmaniac": read_windsurfmaniac, "meteosystem": read_meteosystem}
 
 def r1(v): return None if v is None else round(v, 1)
@@ -93,16 +109,16 @@ def collect_obs(now):
     rows, notes = [], []
     for st in CFG["stations"]:
         try:
-            o = READERS[st["src"]](get(st["url"]))
+            o = read_irbim(st) if st["src"] == "irbim" else READERS[st["src"]](get(st["url"]))
         except Exception as e:
             notes.append(f"{st['id']}: errore {type(e).__name__}"); continue
         if not o:
             notes.append(f"{st['id']}: nessun dato (offline?)"); continue
         age = (now - o["t"]).total_seconds() / 60
-        if age > MAX_AGE_MIN or age < -10:
+        if age > st.get("max_age_min", 100 if st["src"] == "irbim" else MAX_AGE_MIN) or age < -10:
             notes.append(f"{st['id']}: lettura vecchia ({o['t']:%d/%m %H:%M})"); continue
         rows.append([now.isoformat(timespec="minutes"), st["id"], o["t"].isoformat(timespec="minutes"),
-                     r1(o["kn"]), r1(o["gust"]), r1(o["gmax"]), deg_of(o["dir"]), o["dir"] or ""])
+                     r1(o["kn"]), r1(o["gust"]), r1(o["gmax"]), r1(o["deg"]) if o.get("deg") is not None else deg_of(o["dir"]), o["dir"] or ""])
     with open(path, "a", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         if new: w.writerow(["run", "station", "obs_time", "kn", "gust", "gmax_today", "dir_deg", "dir"])
