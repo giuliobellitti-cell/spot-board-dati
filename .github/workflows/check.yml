@@ -1,0 +1,26 @@
+name: Prova centraline
+on:
+  push:
+    paths: ["check_sources.py", ".github/workflows/check.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prova le fonti
+        run: |
+          mkdir -p risultati
+          { echo "Prova del $(TZ=Europe/Rome date '+%d/%m/%Y %H:%M') (ora italiana)"; python check_sources.py; } | tee risultati/prova.txt
+      - name: Salva il risultato
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add risultati/prova.txt
+          git commit -m "Risultato prova centraline" || echo "niente da salvare"
+          git push
