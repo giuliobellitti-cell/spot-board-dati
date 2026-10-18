@@ -180,6 +180,69 @@ def collect_fc(now, force=False):
     json.dump(out, open(path, "w", encoding="utf-8"), separators=(",", ":"))
     print("Previsione del mattino salvata:", os.path.relpath(path, ROOT))
 
+# ---- Dati del mare e meteo delle mede IRBIM (onde, temperature, pressione, umidità) ----
+EXTRA_MAX_AGE_H = 3
+MARE_COLS = ["run", "station", "meteo_time", "air_c", "rh_pct", "bp_hpa", "water_time", "water_c",
+             "wave_time", "hs_m", "hmax_m", "tp_s", "tm_s", "wave_dir_deg"]
+
+def irbim_query(queries):
+    body = json.dumps({"queries": [{"refId": k, "datasource": {"type": "mysql", "uid": "000000003"}, "rawSql": q, "format": "table"}
+                                   for k, q in queries.items()], "from": "now-6h", "to": "now"}).encode()
+    req = urllib.request.Request(IRBIM_URL, data=body, headers={**UA, "Content-Type": "application/json"})
+    res = json.loads(urllib.request.urlopen(req, timeout=30).read())["results"]
+    out = {}
+    for k in queries:
+        fr = (res.get(k) or {}).get("frames") or []
+        vals = fr[0]["data"]["values"] if fr else []
+        out[k] = [v[0] if v else None for v in vals] if vals and vals[0] else None
+    return out
+
+def read_irbim_extra(st, now):
+    x = st["extra"]; t = x["table"]; q = {}
+    met = [x.get(k) or "NULL" for k in ("air", "rh", "bp")]
+    q["M"] = f'SELECT TmStamp, {met[0]}, {met[1]}, {met[2]} FROM {t} ORDER BY TmStamp desc limit 1'
+    if x.get("water"):
+        q["W"] = f'SELECT TmStamp, {x["water"]} AS w FROM {t} WHERE {x["water"]} is not null ORDER BY TmStamp desc limit 1'
+    if x.get("wave"):
+        w = x["wave"]
+        q["O"] = (f'SELECT TmStamp, {w["hs"]}, {w["hmax"]}, {w["tp"]}, {w["tm"]}, {w["dir"]} FROM {t} '
+                  f'WHERE {w["hs"]} is not null and {w["hs"]}>=0 and {w["hs"]}<20 ORDER BY TmStamp desc limit 1')
+    r = irbim_query(q)
+    def ts(v):
+        if v is None: return None
+        d = datetime.fromtimestamp(v / 1000, tz=timezone.utc).astimezone(ROME)
+        return d if (now - d).total_seconds() <= EXTRA_MAX_AGE_H * 3600 else None
+    def ok(v, lo, hi): return v if v is not None and lo <= v <= hi else None
+    row = {"meteo_time": None, "air_c": None, "rh_pct": None, "bp_hpa": None, "water_time": None, "water_c": None,
+           "wave_time": None, "hs_m": None, "hmax_m": None, "tp_s": None, "tm_s": None, "wave_dir_deg": None}
+    m = r.get("M")
+    if m and ts(m[0]):
+        row.update(meteo_time=ts(m[0]), air_c=ok(m[1], -20, 50), rh_pct=ok(m[2], 0, 100), bp_hpa=ok(m[3], 900, 1100))
+    wt = r.get("W")
+    if wt and ts(wt[0]): row.update(water_time=ts(wt[0]), water_c=ok(wt[1], 0, 40))
+    o = r.get("O")
+    if o and ts(o[0]):
+        hs = ok(o[1], 0, 20); hmax = o[2] if o[2] is not None and hs is not None and 0 <= o[2] <= hs + 5 else None
+        row.update(wave_time=ts(o[0]), hs_m=hs, hmax_m=hmax, tp_s=ok(o[3], 0.5, 30), tm_s=ok(o[4], 0.5, 30), wave_dir_deg=ok(o[5], 0, 360))
+    return row
+
+def collect_mare(now):
+    path = os.path.join(ROOT, "data", "mare", now.strftime("%Y-%m") + ".csv")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    new = not os.path.exists(path); rows = []
+    for st in CFG["stations"]:
+        if "extra" not in st: continue
+        try: r = read_irbim_extra(st, now)
+        except Exception as e: print(f"  - {st['id']} mare: errore {type(e).__name__}"); continue
+        if not any(r[k] is not None for k in ("air_c", "water_c", "hs_m", "bp_hpa")): continue
+        f = lambda v: "" if v is None else (v.isoformat(timespec="minutes") if isinstance(v, datetime) else round(v, 2))
+        rows.append([now.isoformat(timespec="minutes"), st["id"]] + [f(r[c]) for c in MARE_COLS[2:]])
+    with open(path, "a", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        if new: w.writerow(MARE_COLS)
+        w.writerows(rows)
+    print(f"Mare: {len(rows)} mede salvate in {os.path.relpath(path, ROOT)}")
+
 def main():
     now = datetime.now(ROME)
     force_fc = "--force-fc" in sys.argv
@@ -191,6 +254,8 @@ def main():
         except Exception as e: print("Previsione non salvata:", type(e).__name__, e)
     if HOUR_FROM <= now.hour <= HOUR_TO or "--force-obs" in sys.argv:
         collect_obs(now)
+        try: collect_mare(now)
+        except Exception as e: print("Mare non salvato:", type(e).__name__, e)
     else:
         print(f"Ore {now:%H:%M}: fuori dalla fascia {HOUR_FROM}-{HOUR_TO}, nessuna misura.")
 
