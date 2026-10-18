@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 ROME = ZoneInfo("Europe/Rome"); ROOT = os.path.dirname(os.path.abspath(__file__))
 CFG = json.load(open(os.path.join(ROOT, "stations.json"), encoding="utf-8"))
 NAMES = {s["id"]: s["name"] for s in CFG["stations"]}; MODELS = CFG["models"]
-SLOTS = [("Mattina", 0, 12), ("Pranzo", 12, 15), ("Pomeriggio", 15, 19), ("Sera", 19, 24)]
+SLOTS = [("7-10", 7, 10), ("10-13", 10, 13), ("13-16", 13, 16), ("16-19", 16, 19)]
 
 def tcrit(df):
     z = 1.959964
