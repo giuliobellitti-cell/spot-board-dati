@@ -162,7 +162,7 @@ def collect_fc(now, force=False):
     sts = CFG["stations"]; models = list(CFG["models"])
     url = ("https://api.open-meteo.com/v1/forecast?latitude=" + ",".join(f"{s['fc'][0]:.3f}" for s in sts)
            + "&longitude=" + ",".join(f"{s['fc'][1]:.3f}" for s in sts)
-           + "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m&wind_speed_unit=kn&timezone=Europe%2FRome"
+           + "&hourly=wind_speed_10m,wind_gusts_10m,wind_direction_10m,temperature_2m,pressure_msl,cloud_cover&wind_speed_unit=kn&timezone=Europe%2FRome"
            + f"&start_date={date}&end_date={date}&models=" + ",".join(models))
     data = json.loads(get(url))
     if isinstance(data, dict): data = [data]
@@ -175,6 +175,9 @@ def collect_fc(now, force=False):
             if not w or all(v is None for v in w): continue
             g = H.get("wind_gusts_10m_" + mod) or [None] * 24; d = H.get("wind_direction_10m_" + mod) or [None] * 24
             m[mod] = {"w": [r1(v) for v in w], "g": [r1(v) for v in g], "d": [None if v is None else int(round(v)) for v in d]}
+            for key, var in (("t", "temperature_2m"), ("p", "pressure_msl"), ("c", "cloud_cover")):
+                a = H.get(var + "_" + mod)
+                if a and any(v is not None for v in a): m[mod][key] = [r1(v) for v in a]
         out["stations"][st["id"]] = {"point": st["fc"], "models": m}
     os.makedirs(os.path.dirname(path), exist_ok=True)
     json.dump(out, open(path, "w", encoding="utf-8"), separators=(",", ":"))

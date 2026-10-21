@@ -21,3 +21,7 @@ e direzione di provenienza dell'onda (`wave_dir_deg`). Ogni gruppo ha il suo ora
 (`meteo_time`, `water_time`, `wave_time`); i valori più vecchi di 3 ore restano vuoti.
 Onde: solo Fano e Portonovo (l'ondametro di Senigallia è fermo dal 2023, Porto Recanati non lo ha).
 Acqua: Fano, Portonovo e Senigallia (sonda a 5 m).
+
+Dal 22/10/2026 la previsione del mattino in `data/fc/` contiene per ogni modello, oltre a vento (`w`), raffica (`g`)
+e direzione (`d`), anche temperatura dell'aria a 2 m (`t`, °C), pressione al livello del mare (`p`, hPa)
+e nuvolosità (`c`, %).
