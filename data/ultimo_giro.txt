@@ -1,2 +1,3 @@
-Giro delle 24/10/2026 19:26: 11 misure salvate su 12 centraline
+Giro delle 24/10/2026 20:29: 10 misure salvate su 12 centraline
+- irbim-fano: lettura vecchia (24/10 18:00)
 - irbim-portonovo: lettura vecchia (24/10 17:00)
