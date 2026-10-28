@@ -1,4 +1,2 @@
-Giro delle 28/10/2026 18:44: 9 misure salvate su 12 centraline
+Giro delle 28/10/2026 19:44: 11 misure salvate su 12 centraline
 - v-portonovo-spiaggia: nessun dato (offline?)
-- irbim-fano: lettura vecchia (28/10 17:00)
-- irbim-portonovo: lettura vecchia (28/10 16:30)
