@@ -1,1 +1,2 @@
-Giro delle 29/10/2026 17:52: 12 misure salvate su 12 centraline
+Giro delle 29/10/2026 18:46: 11 misure salvate su 12 centraline
+- irbim-portonovo: lettura vecchia (29/10 17:00)
