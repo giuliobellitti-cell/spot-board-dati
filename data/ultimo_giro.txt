@@ -1,4 +1,4 @@
-Giro delle 03/11/2026 17:53: 9 misure salvate su 12 centraline
+Giro delle 03/11/2026 18:49: 9 misure salvate su 12 centraline
 - v-senigallia-marzocca: lettura vecchia (02/11 03:42)
 - irbim-fano: lettura vecchia (03/11 16:00)
 - irbim-portonovo: lettura vecchia (03/11 14:30)
