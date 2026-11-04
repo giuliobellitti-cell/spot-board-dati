@@ -1,6 +1,5 @@
-Giro delle 04/11/2026 08:08: 7 misure salvate su 12 centraline
-- v-marotta: lettura vecchia (04/11 00:08)
-- v-senigallia-marzocca: lettura vecchia (02/11 03:42)
-- v-portonovo-spiaggia: lettura vecchia (04/11 00:07)
-- v-numana: lettura vecchia (04/11 00:07)
-- v-marina-palmense: lettura vecchia (04/11 00:07)
+Giro delle 04/11/2026 09:54: 8 misure salvate su 12 centraline
+- irbim-fano: errore URLError
+- irbim-senigallia: errore URLError
+- irbim-portonovo: errore URLError
+- irbim-portorecanati: errore URLError
