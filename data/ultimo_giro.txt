@@ -1,4 +1,4 @@
-Giro delle 04/11/2026 09:54: 8 misure salvate su 12 centraline
+Giro delle 04/11/2026 10:59: 8 misure salvate su 12 centraline
 - irbim-fano: errore URLError
 - irbim-senigallia: errore URLError
 - irbim-portonovo: errore URLError
