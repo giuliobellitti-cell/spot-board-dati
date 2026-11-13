@@ -1,2 +1,4 @@
-Giro delle 13/11/2026 14:02: 11 misure salvate su 12 centraline
+Giro delle 13/11/2026 15:14: 9 misure salvate su 12 centraline
 - v-marina-palmense: nessun dato (offline?)
+- irbim-fano: lettura vecchia (13/11 13:30)
+- irbim-portonovo: lettura vecchia (13/11 13:00)
